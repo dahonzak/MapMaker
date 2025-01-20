@@ -1,84 +1,83 @@
-const map = document.getElementById('map');
-        const svg = document.getElementById('svg-overlay');
-        const points = [];
+class Point {
+    constructor(x, y, index) {
+        this.x = x;
+        this.y = y;
+        this.index = index;
+        this.createPoint();
+        if (index > 0) this.createLine();
+        if (index > 0 && index < 10) this.createLabel();
+    }
 
-        const createSVGElement = (type, attributes) => {
-            const elem = document.createElementNS("http://www.w3.org/2000/svg", type);
-            for (let attr in attributes) {
-                elem.setAttribute(attr, attributes[attr]);
-            }
-            return elem;
-        };
+    createPoint() {
+        this.element = document.createElement("div");
 
-        map.addEventListener("click", (e) => {
-            const rect = map.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        if (this.index === 0) {
+            // First point - Triangle
+            this.element.classList.add("triangle");
+        } else if (this.index === 10) {
+            // Last point after 10 clicks - Double Circle
+            this.element.classList.add("double-circle");
+        } else {
+            // Normal points - Hollow circle
+            this.element.classList.add("point");
+        }
 
-            points.push({ x, y });
-            drawPoints();
-        });
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+        document.getElementById("map-container").appendChild(this.element);
 
-        const drawPoints = () => {
-            svg.innerHTML = ""; // Clear previous drawings
+        if (this.index === 0) this.orientTriangle();
+    }
 
-            for (let i = 0; i < points.length; i++) {
-                const { x, y } = points[i];
+    createLine() {
+        const prev = points[this.index - 1];
+        const line = document.createElement("div");
+        line.classList.add("line");
 
-                if (i === 0) {
-                    // First point (Triangle)
-                    const triangle = createSVGElement("polygon", {
-                        points: `${x},${y-10} ${x-8},${y+10} ${x+8},${y+10}`,
-                        fill: "black",
-                        stroke: "pink",
-                        "stroke-width": "2"
-                    });
-                    svg.appendChild(triangle);
-                } else if (i === 10) {
-                    // Last point after 10 clicks (Double Circle)
-                    const outerCircle = createSVGElement("circle", {
-                        cx: x, cy: y, r: 8,
-                        fill: "white", stroke: "pink", "stroke-width": "2"
-                    });
-                    const innerCircle = createSVGElement("circle", {
-                        cx: x, cy: y, r: 4,
-                        fill: "black"
-                    });
-                    svg.appendChild(outerCircle);
-                    svg.appendChild(innerCircle);
-                } else {
-                    // Normal points (Small black circles)
-                    const circle = createSVGElement("circle", {
-                        cx: x, cy: y, r: 5,
-                        fill: "black",
-                        stroke: "pink",
-                        "stroke-width": "2"
-                    });
-                    svg.appendChild(circle);
+        // Calculate distance and angle
+        const dx = this.x - prev.x;
+        const dy = this.y - prev.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-                    if (i > 0 && i < 10) {
-                        // Add text labels for non-first, non-last points
-                        const text = createSVGElement("text", {
-                            x: x + 10, y: y - 10,
-                            "font-size": "14px",
-                            "font-family": "Arial",
-                            fill: "black"
-                        });
-                        text.textContent = i;
-                        svg.appendChild(text);
-                    }
-                }
+        line.style.width = `${length}px`;
+        line.style.height = "2px";
+        line.style.left = `${prev.x}px`;
+        line.style.top = `${prev.y}px`;
+        line.style.transform = `rotate(${angle}deg)`;
 
-                // Draw lines connecting each point
-                if (i > 0) {
-                    const prev = points[i - 1];
-                    const line = createSVGElement("line", {
-                        x1: prev.x, y1: prev.y,
-                        x2: x, y2: y,
-                        stroke: "pink",
-                        "stroke-width": "2"
-                    });
-                    svg.appendChild(line);
-                }
-            }
-        };
+        document.getElementById("map-container").appendChild(line);
+    }
+
+    createLabel() {
+        const label = document.createElement("div");
+        label.classList.add("label");
+        label.style.left = `${this.x}px`;
+        label.style.top = `${this.y}px`;
+        label.textContent = this.index;
+        document.getElementById("map-container").appendChild(label);
+    }
+
+    orientTriangle() {
+        if (points.length > 1) {
+            const next = points[1];
+            const dx = next.x - this.x;
+            const dy = next.y - this.y;
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+            this.element.style.transform = `rotate(${angle}deg) translate(-50%, -50%)`;
+        }
+    }
+}
+
+let points = [];
+
+document.getElementById("map").addEventListener("click", (e) => {
+    const rect = map.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (points.length < 11) {
+        points.push(new Point(x, y, points.length));
+    }
+});
