@@ -1,0 +1,22 @@
+#map-container {
+    position: relative;
+    display: inline-block;
+}
+#map {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.circle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 3px solid red;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.7);
+    cursor: grab;
+}
