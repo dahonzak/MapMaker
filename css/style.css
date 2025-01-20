@@ -1,33 +1,16 @@
-body {
-    text-align: center;
-}
-
-.map-container {
-    position: relative;
-    display: inline-block;
-}
-
-#map {
-    display: block;
-}
-
-.point {
-    position: absolute;
-    transform: translate(-50%, -50%);
-}
-
-.label {
-    position: absolute;
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 2px 5px;
-    border-radius: 3px;
-    white-space: nowrap;
-}
-
-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
+body { text-align: center; }
+        #map-container {
+            position: relative;
+            display: inline-block;
+        }
+        #map {
+            display: block;
+            width: 800px; /* Adjust as needed */
+            height: auto;
+        }
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
