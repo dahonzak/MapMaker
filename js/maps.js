@@ -25,6 +25,7 @@ class Point {
         this.y = y;
         this.index = index;
         this.latLon = converter.toLatLon(x, y);
+        this.radius = 5; // Approximate radius of a point
         this.createPoint();
         if (index > 0) this.createLine();
         if (index > 0 && index < 10) this.createLabel();
@@ -53,18 +54,17 @@ class Point {
         const prev = points[this.index - 1];
         const line = document.createElement("div");
         line.classList.add("line");
-
         const dx = this.x - prev.x;
         const dy = this.y - prev.y;
         const length = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-        line.style.width = `${length}px`;
+        const offsetX = (dx / length) * this.radius;
+        const offsetY = (dy / length) * this.radius;
+        line.style.width = `${length - 2 * this.radius}px`;
         line.style.height = "2px";
-        line.style.left = `${prev.x}px`;
-        line.style.top = `${prev.y}px`;
+        line.style.left = `${prev.x + offsetX}px`;
+        line.style.top = `${prev.y + offsetY}px`;
         line.style.transform = `rotate(${angle}deg)`;
-
         document.getElementById("map-container").appendChild(line);
     }
 
@@ -113,5 +113,7 @@ document.getElementById("map").addEventListener("click", (e) => {
 
     if (points.length < 11) {
         points.push(new Point(x, y, points.length, converter));
+        if (points.length > 1) points[0].orientTriangle();
     }
 });
+

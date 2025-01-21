@@ -1,60 +1,71 @@
-body { text-align: center; }
-        #map-container {
-            position: relative;
-            display: inline-block;
-        }
-        #map {
-            display: block;
-            width: 800px; /* Adjust as needed */
-            height: auto;
-        }
-        .point {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            border: 3px solid pink;
-            background: none;
-            transform: translate(-50%, -50%);
-        }
-        .line {
-            position: absolute;
-            background: pink;
-            transform-origin: top left;
-        }
-        .triangle {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 20px solid black;
-            transform-origin: center;
-        }
-        .double-circle {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 3px solid pink;
-            background: none;
-            transform: translate(-50%, -50%);
-        }
-        .double-circle::after {
-            content: "";
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 2px solid pink;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .label {
-            position: absolute;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
-            color: black;
-            transform: translate(10px, -10px);
-        }
+:root {
+    --bg:white;
+    --color:rgb(245 51 144 / 66%);
+}
+html,body {
+    margin:0;
+    padding:0;
+}
+body { 
+    text-align: center; 
+    color:var(--white);
+}
+#map-container {
+    position: relative;
+    display: inline-block;
+}
+#map {
+    display: block;
+    width: auto; /* Adjust as needed */
+    height: 100vh;
+}
+.point {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 3px solid var(--color);
+    background: none;
+    transform: translate(-50%, -50%);
+}
+.line {
+    position: absolute;
+    background: var(--color);
+    transform-origin: top left;
+}
+.triangle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid var(--color);
+    transform-origin: center;
+}
+.double-circle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid var(--color);
+    background: none;
+    transform: translate(-50%, -50%);
+}
+.double-circle::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.label {
+    position: absolute;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: var(--color);
+    transform: translate(10px, -10px);
+}
