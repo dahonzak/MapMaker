@@ -1,12 +1,18 @@
 let points = [];
-let maxPoints = 10;
 let courseInfo = {
-    name: "",
-    creator: "",
-    difficulty: "",
-
+    name: null,
+    creator: null,
+    difficulty: null,
+    controls:null
 };
-
+let maxPoints = null;
+const container = document.getElementById('map-container');
+let isDragging = false;
+let hasMoved = false;
+let startX, startY;
+let scrollLeft = 0;
+let scrollTop = 0;
+const dragThreshold = 5;
 class MapConverter {
     constructor(topLeft, bottomRight, mapElement) {
         this.lat1 = topLeft.lat;
@@ -120,15 +126,71 @@ const converter = new MapConverter(
     document.getElementById("map")
 );
 
-document.getElementById("map").addEventListener("click", (e) => {
-    const rect = map.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+const setCourseInfo = (info) => {
+    let value = prompt(`Enter course ${info}:`);
+    if (value !== null) {
+        courseInfo[info] = value;
+        if (info === "controls" && !isNaN(value) && value.trim() !== "" && Number.isInteger(parseFloat(value)) && parseInt(value) > 0 && maxPoints === null) {
+            maxPoints = parseInt(value);
+        }
+        document.getElementById(`course${info}`).textContent = value;
+    }
+};
 
-    if (points.length < maxPoints+1) {
-        points.push(new Point(x, y, points.length, converter));
-        if (points.length > 1) points[0].orientTriangle();
-        console.log(points[points.length - 1]);
+document.getElementById("map").addEventListener("click", (e) => {
+    if (hasMoved) {
+      e.preventDefault();
+    }
+    else if (courseInfo.controls !== null) {
+        const rect = map.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (points.length < maxPoints+1) {
+            points.push(new Point(x, y, points.length, converter));
+            if (points.length > 1) points[0].orientTriangle();
+            console.log(points[points.length - 1]);
+        }
+    }
+    else {
+        alert("Please set the course control number before adding points.");
     }
 });
 
+ document.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    hasMoved = false;
+    container.classList.add('dragging');
+    startX = e.clientX;
+    startY = e.clientY;
+    scrollLeft = window.scrollX;
+    scrollTop = window.scrollY;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (Math.abs(dx) > dragThreshold || Math.abs(dy) > dragThreshold) {
+      hasMoved = true;
+      window.scrollTo({
+        top: scrollTop - dy,
+        left: scrollLeft - dx
+      });
+    }
+  });
+
+  document.addEventListener('mouseup', (e) => {
+    container.classList.remove('dragging');
+
+    if (isDragging && hasMoved) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    isDragging = false;
+  });
+
+document.querySelectorAll('img').forEach(img => img.draggable = false);

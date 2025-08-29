@@ -7,8 +7,25 @@
     <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-    <div id="map-container">
-        <img id="map" src="maps/blue.jpg" alt="Map">
+    <div id="mapBox">
+        <div id="map-container">
+            <img id="map" src="maps/blue.jpg" alt="Map" draggable="false">
+        </div>
+        <div id="menu"></div>
+        <div id="info">
+            <h2>Course Information</h2>
+            <p onclick="setCourseInfo('name');">Name: <span id="coursename"></span></p>
+            <p onclick="setCourseInfo('creator');">Creator: <span id="coursecreator"></span></p>
+            <p onclick="setCourseInfo('difficulty');">Difficulty: <span id="coursedifficulty"></span></p>
+            <p onclick="setCourseInfo('controls');">Controls: <span id="coursecontrols"></span></p>
+            <table id="coursePoints">
+                <tr>
+                    <th>Point</th>
+                    <th>Description</th>
+                    <th>Coordinates</th>
+                </tr>
+            </table>
+        </div>
     </div>
     <script src="js/maps.js"></script>
 </body>
