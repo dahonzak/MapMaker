@@ -1,3 +1,12 @@
+let points = [];
+let maxPoints = 10;
+let courseInfo = {
+    name: "",
+    creator: "",
+    difficulty: "",
+
+};
+
 class MapConverter {
     constructor(topLeft, bottomRight, mapElement) {
         this.lat1 = topLeft.lat;
@@ -28,7 +37,7 @@ class Point {
         this.radius = 5; // Approximate radius of a point
         this.createPoint();
         if (index > 0) this.createLine();
-        if (index > 0 && index < 10) this.createLabel();
+        if (index > 0 && index < maxPoints) this.createLabel();
         this.createCoords();
     }
 
@@ -37,7 +46,7 @@ class Point {
 
         if (this.index === 0) {
             this.element.classList.add("triangle");
-        } else if (this.index === 10) {
+        } else if (this.index === maxPoints) {
             this.element.classList.add("double-circle");
         } else {
             this.element.classList.add("point");
@@ -58,12 +67,13 @@ class Point {
         const dy = this.y - prev.y;
         const length = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        const offsetX = (dx / length) * this.radius;
-        const offsetY = (dy / length) * this.radius;
-        line.style.width = `${length - 2 * this.radius}px`;
+        const offsetX = (dx / length) * (this.radius + 6);
+        const offsetY = (dy / length) * (this.radius + 6);
+        const prad = 4 * this.radius;
+        line.style.width = `${length - prad}px`;
         line.style.height = "2px";
         line.style.left = `${prev.x + offsetX}px`;
-        line.style.top = `${prev.y + offsetY}px`;
+        line.style.top = `${prev.y + offsetY - 1}px`;
         line.style.transform = `rotate(${angle}deg)`;
         document.getElementById("map-container").appendChild(line);
     }
@@ -86,23 +96,27 @@ class Point {
         document.getElementById("map-container").appendChild(coordText);
     }
 
+    askDescription() {
+        const description = prompt("Enter a description for this point:");
+        if (description !== null) {
+            this.description = description;
+        }
+    }
+
     orientTriangle() {
         if (points.length > 1) {
             const next = points[1];
             const dx = next.x - this.x;
             const dy = next.y - this.y;
-            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-            this.element.style.transform = `rotate(${angle}deg) translate(-50%, -50%)`;
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            this.element.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
         }
     }
 }
 
-let points = [];
-
 const converter = new MapConverter(
     { lat: 39.00519909462398, lon: -77.0094406846897 },
-    { lat: 38.97126732894448, lon: -77.00976581667058 },
+    { lat: 38.971194, lon: -76.963440 },
     document.getElementById("map")
 );
 
@@ -111,9 +125,10 @@ document.getElementById("map").addEventListener("click", (e) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (points.length < 11) {
+    if (points.length < maxPoints+1) {
         points.push(new Point(x, y, points.length, converter));
         if (points.length > 1) points[0].orientTriangle();
+        console.log(points[points.length - 1]);
     }
 });
 

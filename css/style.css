@@ -5,10 +5,13 @@
 html,body {
     margin:0;
     padding:0;
+    height:100vh;
+    width:100vw;
 }
 body { 
     text-align: center; 
     color:var(--white);
+    overflow: auto;
 }
 #map-container {
     position: relative;
@@ -17,7 +20,7 @@ body {
 #map {
     display: block;
     width: auto; /* Adjust as needed */
-    height: 100vh;
+    height: 1000px;
 }
 .point {
     position: absolute;
@@ -31,7 +34,7 @@ body {
 .line {
     position: absolute;
     background: var(--color);
-    transform-origin: top left;
+    transform-origin: left center;
 }
 .triangle {
     position: absolute;
@@ -40,7 +43,7 @@ body {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 20px solid var(--color);
-    transform-origin: center;
+    transform-origin: bottom center !important;
 }
 .double-circle {
     position: absolute;
